@@ -184,15 +184,15 @@
 
         function loadRooms() {
             const container = document.getElementById('room-container');
-            container.innerHTML = '';
+            container.innerHTML = ''; // Clear existing content
             rooms.forEach(room => {
                 const roomCard = document.createElement('div');
-                roomCard.className = 'room-card';
+                roomCard.className = 'room-card'; // Add card class for styling
                 roomCard.innerHTML = `
-                    <h3>${rooms.name}</h3>
-                    <p>Location: ${rooms.location}</p>
+                    <h3>${room.name}</h3>
+                     <p>Location: ${room.location}</p>
                     <button onclick="openBookingModal(${room.id})">Book Room</button>
-                `;
+        `       ;
                 container.appendChild(roomCard);
             });
         }
