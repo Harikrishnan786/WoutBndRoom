@@ -168,8 +168,8 @@
                 const roomCard = document.createElement('div');
                 roomCard.className = 'room-card';
                 roomCard.innerHTML = `
-                    <h3>${room.name}</h3>
-                    <p>Location: ${room.location}</p>
+                    <h3>${rooms.name}</h3>
+                    <p>Location: ${rooms.location}</p>
                     <button onclick="openBookingModal(${room.id})">Book Room</button>
                 `;
                 container.appendChild(roomCard);
