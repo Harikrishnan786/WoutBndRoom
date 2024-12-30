@@ -212,7 +212,7 @@ th {
                             </tr>
                         </thead>
                         <tbody>
-                            ${room.bookings.map(booking , index => `
+                            ${room.bookings.map(booking , index) => `
                                 <tr>
                                     <td>${booking.employeeName}</td>
                                     <td>${new Date(booking.startTime).toLocaleDateString()}</td>
