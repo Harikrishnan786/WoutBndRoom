@@ -186,19 +186,27 @@
         }
 
         function loadRooms() {
-            const container = document.getElementById('room-container');
-            container.innerHTML = ''; // Clear existing content
-            rooms.forEach(room => {
-                const roomCard = document.createElement('div');
-                roomCard.className = 'room-card'; // Add card class for styling
-                roomCard.innerHTML = `
-                    <h3>${room.name}</h3>
-                     <p>Location: ${room.location}</p>
-                    <button onclick="openBookingModal(${room.id})">Book Room</button>
-        `       ;
-                container.appendChild(roomCard);
-            });
-        }
+                        const container = document.getElementById('room-container');
+                        container.innerHTML = ''; // Clear existing content
+                        rooms.forEach(room => {
+                            const roomCard = document.createElement('div');
+                            roomCard.className = 'room-card';
+                            roomCard.innerHTML = `
+                                <h3>${room.name}</h3>
+                                <p>Location: ${room.location}</p>
+                                <div id="bookings-room-${room.id}" class="booking-details">
+                                    ${room.bookings.map(booking => `
+                                        <p>
+                                            <strong>${booking.employeeName}:</strong>
+                                            ${booking.startTime} to ${booking.endTime}
+                                        </p>
+                                    `).join('')}
+                                </div>
+                                <button onclick="openBookingModal(${room.id})">Book Room</button>
+                            `;
+                            container.appendChild(roomCard);
+                        });
+                }
 
         function openBookingModal(roomId) {
             document.getElementById('room-id').value = roomId;
@@ -209,20 +217,34 @@
             document.getElementById('booking-modal').style.display = 'none';
         }
 
-        function submitBooking() {
-            const roomId = document.getElementById('room-id').value;
-            const startTime = document.getElementById('start-time').value;
-            const endTime = document.getElementById('end-time').value;
-            const employeeName = document.getElementById('employee-name-hidden').value;
-            const employeeId = document.getElementById('employee-id-hidden').value;
-
-            if (startTime && endTime) {
-                alert(`Room booked successfully!\nRoom ID: ${roomId}\nEmployee: ${employeeName} (${employeeId})\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
-                closeBookingModal();
-            } else {
-                alert('Please select start and end times.');
+                    function submitBooking() {
+                        const roomId = parseInt(document.getElementById('room-id').value, 10);
+                        const startTime = document.getElementById('start-time').value;
+                        const endTime = document.getElementById('end-time').value;
+                        const employeeName = document.getElementById('employee-name-hidden').value;
+                        const employeeId = document.getElementById('employee-id-hidden').value;
+                    
+                        if (startTime && endTime) {
+                            // Add the booking details to the respective room
+                            const room = rooms.find(r => r.id === roomId);
+                            if (room) {
+                                room.bookings.push({
+                                    employeeName,
+                                    employeeId,
+                                    startTime,
+                                    endTime,
+                                });
+                    
+                                // Refresh the room display to show updated bookings
+                                loadRooms();
+                    
+                                alert(`Room booked successfully!\nRoom ID: ${roomId}\nEmployee: ${employeeName} (${employeeId})\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
+                                closeBookingModal();
+                            }
+                        } else {
+                            alert('Please select start and end times.');
+                        }
             }
-        }
     </script>
 </body>
 </html>
