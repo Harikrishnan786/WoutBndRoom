@@ -98,7 +98,7 @@ th {
                 border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
                 border-radius: 8px; /* Optional: Adds rounded corners */
                 padding: 16px; /* Adds spacing inside the card */
-                width: 300px; /* Ensures consistent card width */
+                width: 200px; /* Ensures consistent card width */
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for depth */
                 background-color: #f9f9f9; /* Optional: Adds a background color */
                 text-align: center; /* Optional: Centers text inside the card */
@@ -108,6 +108,13 @@ th {
             margin-bottom: 10px;
             font-size: 1.2em;
             }
+        .booking-table {
+        width: 100%; /* Ensure table takes full available width */
+        max-width: 100%; /* Prevent table from stretching beyond room card */
+        overflow-x: auto; /* Allow horizontal scrolling if content overflows */
+        border-collapse: collapse; /* Make table borders look better */
+        margin-top: 10px;
+    }
     </style>
 </head>
 <body>
