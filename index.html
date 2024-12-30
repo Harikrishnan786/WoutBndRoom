@@ -188,6 +188,7 @@
         function loadRooms() {
     const container = document.getElementById('room-container');
     container.innerHTML = ''; // Clear existing content
+
     rooms.forEach(room => {
         const roomCard = document.createElement('div');
         roomCard.className = 'room-card';
@@ -195,18 +196,35 @@
             <h3>${room.name}</h3>
             <p>Location: ${room.location}</p>
             <div id="bookings-room-${room.id}" class="booking-details">
-                ${room.bookings.length > 0 ? room.bookings.map(booking => `
-                    <p>
-                        <strong>${booking.employeeName}:</strong> 
-                        ${new Date(booking.startTime).toLocaleString()} to ${new Date(booking.endTime).toLocaleString()}
-                    </p>
-                `).join('') : '<p>No bookings yet.</p>'}
+                ${room.bookings.length > 0 ? `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${room.bookings.map(booking => `
+                                <tr>
+                                    <td>${booking.employeeName}</td>
+                                    <td>${new Date(booking.startTime).toLocaleDateString()}</td>
+                                    <td>${new Date(booking.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                    <td>${new Date(booking.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                ` : '<p>No bookings yet.</p>'}
             </div>
             <button onclick="openBookingModal(${room.id})">Book Room</button>
         `;
         container.appendChild(roomCard);
     });
 }
+
 
         function openBookingModal(roomId) {
             document.getElementById('room-id').value = roomId;
