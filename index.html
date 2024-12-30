@@ -8,15 +8,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
-            display: flex; /* Flexbox for centering */
-            flex-direction: column; /* Ensure header and form stack vertically */
-            justify-content: center; /* Center content vertically */
-            align-items: center; /* Center content horizontally */
-            height: 100vh; /* Full viewport height */
-            margin: 0; /* Remove default margin */
-            background-color: #f9f9f9; /* Optional background color */
-            font-family: Arial, sans-serif; /* Consistent font */
-        }
+        display: flex;
+        justify-content: center; /* Horizontally center */
+        align-items: center;     /* Vertically center */
+        min-height: 100vh;       /* Ensure it takes full viewport height */
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
         h1 {
             margin-bottom: 50px; /* Add spacing between heading and form */
         }
@@ -89,15 +87,12 @@ th {
             font-size: 1.5em;
             margin-bottom: 10px;
         }
-                .room-container {
-                        display: flex; /* Enables flexbox layout */
-                        flex-wrap: wrap; /* Allows wrapping of cards */
-                        gap: 20px; /* Adds spacing between cards */
-                        justify-content: center; /* Centers items horizontally */
-                        align-items: center; /* Centers items vertically within the container */
-                        margin: 20px auto; /* Centers the container itself within the page */
-                        max-width: 100%; /* Optional: Adjusts container width */
-                    }
+                #room-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Center the room cards within the container */
+        gap: 20px; /* Add space between the room cards */
+    }
     
             .room-card {
                 border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
