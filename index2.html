@@ -3,120 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Booking</title>
+    <title>Conference Room Booking</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;     /* Vertically center */
+        min-height: 100vh;       /* Ensure it takes full viewport height */
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+        h1 {
+            margin-bottom: 50px; /* Add spacing between heading and form */
+            text-align: centre;
+            margin-top: 100px
         }
-        .room-card {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
+        h2 {
+            margin-bottom: 100px; /* Add spacing between heading and form */
+            text-align: center;
         }
-        .room-card h3 {
-            margin: 0;
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Optional shadow for aesthetics */
         }
-        .booking-details {
-            margin-top: 10px;
+        button {
             padding: 10px;
-            background: #f9f9f9;
+            border: none;
             border-radius: 5px;
+            color: white;
+            background: linear-gradient(to left, #ff00ff, #00ffff);
+            cursor: pointer;
+            animation: blink 2s infinite; /* Add blinking animation */
         }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        /* Define the blinking animation */
+        @keyframes blink {
+            0% {
+                opacity: 1; /* Fully visible */
+            }
+            50% {
+                opacity: 0.5; /* Half transparent */
+            }
+            100% {
+                opacity: 1; /* Fully visible */
+            }
+        }
+        table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        caption {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+                #room-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Center the room cards within the container */
+        gap: 20px; /* Add space between the room cards */
+        margin-bottom: 10px;            
+    }
+    
+            .room-card {
+                border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
+                border-radius: 8px; /* Optional: Adds rounded corners */
+                padding: 16px; /* Adds spacing inside the card */
+                width: 300px; /* Ensures consistent card width */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for depth */
+                background-color: #f9f9f9; /* Optional: Adds a background color */
+                text-align: center; /* Optional: Centers text inside the card */
+            }
+
+            .room-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            }
+        .booking-table {
+        width: 100%; /* Ensure table takes full available width */
+        max-width: 100%; /* Prevent table from stretching beyond room card */
+        overflow-x: auto; /* Allow horizontal scrolling if content overflows */
+        border-collapse: collapse; /* Make table borders look better */
+        margin-top: 10px;
+    }
     </style>
 </head>
 <body>
-    <h1>Room Booking System</h1>
-    <div id="room-container"></div>
+    <h1>Conference Room Booking</h1>
+
+    <!-- Employee Details -->
+    <form id="employee-form">
+        <label for="employee-name" style="color: #d41b1b;">Emp Name:</label>
+        <input type="text" id="employee-name" name="employee_name" required style="
+            padding: 5px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px;">
+
+        <label for="employee-id" style="color: #333;">Emp ID:</label>
+        <input type="text" id="employee-id" name="employee_id" required style="
+            padding: 5px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px;">
+
+        <button type="button" onclick="enableBooking()">Continue</button>
+    </form>
+
+    <!-- Room Booking Section -->
+    <div id="booking-section" style="display: none;">
+        <h2>Available Rooms</h2>
+        <div id="room-container" class="room-container">
+            <!-- Room data will be dynamically loaded here -->
+        </div>
+    </div>
 
     <!-- Booking Modal -->
-    <div id="booking-modal" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border: 1px solid #ccc; padding: 20px; border-radius: 5px; z-index: 1000;">
-        <h3>Book a Room</h3>
-        <input type="hidden" id="room-id">
-        <p>Start Time: <input type="datetime-local" id="start-time"></p>
-        <p>End Time: <input type="datetime-local" id="end-time"></p>
-        <input type="hidden" id="employee-name-hidden" value="John Doe">
-        <input type="hidden" id="employee-id-hidden" value="E123">
-        <button onclick="submitBooking()">Confirm Booking</button>
+    <div id="booking-modal" style="display: none;">
+        <h3>Book Room</h3>
+        <form id="booking-form">
+            <input type="hidden" id="room-id" name="room_id">
+            <label for="start-time">Select Start Time:</label>
+            <input type="datetime-local" id="start-time" name="start_time" step="1800" required>
+            <br>
+            <label for="end-time">Select End Time:</label>
+            <input type="datetime-local" id="end-time" name="end_time" step="1800" required>
+            <br>
+            <input type="hidden" id="employee-name-hidden" name="employee_name">
+            <input type="hidden" id="employee-id-hidden" name="employee_id">
+            <button type="button" onclick="submitBooking()">Confirm Booking</button>
+        </form>
         <button onclick="closeBookingModal()">Cancel</button>
     </div>
 
     <script>
-        // Room data
         const rooms = [
-            { id: 1, name: "New Sales Conference", location: "First Floor", bookings: [] },
-            { id: 2, name: "Jeff Bezos", location: "Second Floor", bookings: [] },
-            { id: 3, name: "HR", location: "First Floor", bookings: [] },
+            { id: 1, name: "New Sales Conference", location: "First Floor", bookings:[] },
+            { id: 2, name: "Jeff Bezos", location: "Second Floor",bookings:[] },
+            { id: 3, name: "HR", location: "First Floor", bookings:[] },
+            
         ];
 
-        // Load room cards
-        function loadRooms() {
-            const container = document.getElementById('room-container');
-            container.innerHTML = ''; // Clear existing content
-            rooms.forEach(room => {
-                const roomCard = document.createElement('div');
-                roomCard.className = 'room-card';
-                roomCard.innerHTML = `
-                    <h3>${room.name}</h3>
-                    <p>Location: ${room.location}</p>
-                    <div id="bookings-room-${room.id}" class="booking-details">
-                        ${room.bookings.length ? room.bookings.map(booking => `
-                            <p>
-                                <strong>${booking.employeeName}</strong>:
-                                ${booking.startTime} to ${booking.endTime}
-                            </p>
-                        `).join('') : '<p>No bookings yet.</p>'}
-                    </div>
-                    <button onclick="openBookingModal(${room.id})">Book Room</button>
-                `;
-                container.appendChild(roomCard);
-            });
+        function enableBooking() {
+            const name = document.getElementById('employee-name').value;
+            const id = document.getElementById('employee-id').value;
+
+            if (name && id) {
+                document.getElementById('employee-name-hidden').value = name;
+                document.getElementById('employee-id-hidden').value = id;
+                document.getElementById('booking-section').style.display = 'block';
+                document.getElementById('employee-form').style.display = 'none';
+                loadRooms();
+            } else {
+                alert('Please provide both Employee Name and Employee ID.');
+            }
         }
 
-        // Open booking modal
+        function loadRooms() {
+    const container = document.getElementById('room-container');
+    container.innerHTML = ''; // Clear existing content
+
+    rooms.forEach(room => {
+        const roomCard = document.createElement('div');
+        roomCard.className = 'room-card';
+        roomCard.innerHTML = `
+            <h3>${room.name}</h3>
+            <p>Location: ${room.location}</p>
+            <div id="bookings-room-${room.id}" class="booking-details">
+                ${room.bookings.length > 0 ? `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${room.bookings.map(booking => `
+                                <tr>
+                                    <td>${booking.employeeName}</td>
+                                    <td>${new Date(booking.startTime).toLocaleDateString()}</td>
+                                    <td>${new Date(booking.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                    <td>${new Date(booking.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                ` : '<p>No bookings yet.</p>'}
+            </div>
+            <button onclick="openBookingModal(${room.id})">Book Room</button>
+        `;
+        container.appendChild(roomCard);
+    });
+}
+
+
+
         function openBookingModal(roomId) {
             document.getElementById('room-id').value = roomId;
             document.getElementById('booking-modal').style.display = 'block';
         }
 
-        // Close booking modal
         function closeBookingModal() {
             document.getElementById('booking-modal').style.display = 'none';
         }
 
-        // Submit booking
-        function submitBooking() {
-            const roomId = parseInt(document.getElementById('room-id').value, 10);
-            const startTime = document.getElementById('start-time').value;
-            const endTime = document.getElementById('end-time').value;
-            const employeeName = document.getElementById('employee-name-hidden').value;
-            const employeeId = document.getElementById('employee-id-hidden').value;
+                    function submitBooking() {
+    const roomId = parseInt(document.getElementById('room-id').value, 10);
+    const startTime = document.getElementById('start-time').value;
+    const endTime = document.getElementById('end-time').value;
+    const employeeName = document.getElementById('employee-name-hidden').value;
+    const employeeId = document.getElementById('employee-id-hidden').value;
 
-            if (startTime && endTime) {
-                // Add the booking to the selected room
-                const room = rooms.find(r => r.id === roomId);
-                if (room) {
-                    room.bookings.push({
-                        employeeName,
-                        employeeId,
-                        startTime,
-                        endTime,
-                    });
+    if (startTime && endTime) {
+        const room = rooms.find(r => r.id === roomId);
+        if (room) {
+            room.bookings.push({
+                employeeName,
+                employeeId,
+                startTime,
+                endTime,
+            });
 
-                    // Refresh the room cards
-                    loadRooms();
+            // Refresh the room display to show updated bookings
+            loadRooms();
 
-                    alert(`Room booked successfully!\nRoom ID: ${roomId}\nEmployee: ${employeeName} (${employeeId})\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
-                    closeBookingModal();
-                }
-            } else {
-                alert('Please select start and end times.');
-            }
+            alert(`Room booked successfully!\nRoom ID: ${roomId}\nEmployee: ${employeeName} (${employeeId})\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
+            closeBookingModal();
         }
+    } else {
+        alert('Please select start and end times.');
+    }
+}
 
-        // Initial load
-        loadRooms();
     </script>
 </body>
 </html>
