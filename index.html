@@ -90,12 +90,15 @@
             font-size: 1.5em;
             margin-bottom: 10px;
         }
-            .room-container {
-                display: flex;
-                flex-wrap: wrap; /* Allows wrapping to the next row if there's not enough space */
-                gap: 20px; /* Adds space between room cards */
-                justify-content: center; /* Centers the items horizontally */
-            }
+                .room-container {
+                        display: flex; /* Enables flexbox layout */
+                        flex-wrap: wrap; /* Allows wrapping of cards */
+                        gap: 20px; /* Adds spacing between cards */
+                        justify-content: center; /* Centers items horizontally */
+                        align-items: center; /* Centers items vertically within the container */
+                        margin: 20px auto; /* Centers the container itself within the page */
+                        max-width: 100%; /* Optional: Adjusts container width */
+                    }
     
             .room-card {
                 border: 1px solid #ccc; /* Optional: Adds a border for better visibility */
