@@ -212,12 +212,13 @@ th {
                             </tr>
                         </thead>
                         <tbody>
-                            ${room.bookings.map(booking => `
+                            ${room.bookings.map(booking , index => `
                                 <tr>
                                     <td>${booking.employeeName}</td>
                                     <td>${new Date(booking.startTime).toLocaleDateString()}</td>
                                     <td>${new Date(booking.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                                     <td>${new Date(booking.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                    <td><button onclick="cancelBooking(${room.id}, ${index})">Cancel</button></td>
                                 </tr>
                             `).join('')}
                         </tbody>
