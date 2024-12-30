@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .room-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .room-card h3 {
+            margin: 0;
+        }
+        .booking-details {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Room Booking System</h1>
+    <div id="room-container"></div>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; border: 1px solid #ccc; padding: 20px; border-radius: 5px; z-index: 1000;">
+        <h3>Book a Room</h3>
+        <input type="hidden" id="room-id">
+        <p>Start Time: <input type="datetime-local" id="start-time"></p>
+        <p>End Time: <input type="datetime-local" id="end-time"></p>
+        <input type="hidden" id="employee-name-hidden" value="John Doe">
+        <input type="hidden" id="employee-id-hidden" value="E123">
+        <button onclick="submitBooking()">Confirm Booking</button>
+        <button onclick="closeBookingModal()">Cancel</button>
+    </div>
+
+    <script>
+        // Room data
+        const rooms = [
+            { id: 1, name: "New Sales Conference", location: "First Floor", bookings: [] },
+            { id: 2, name: "Jeff Bezos", location: "Second Floor", bookings: [] },
+            { id: 3, name: "HR", location: "First Floor", bookings: [] },
+        ];
+
+        // Load room cards
+        function loadRooms() {
+            const container = document.getElementById('room-container');
+            container.innerHTML = ''; // Clear existing content
+            rooms.forEach(room => {
+                const roomCard = document.createElement('div');
+                roomCard.className = 'room-card';
+                roomCard.innerHTML = `
+                    <h3>${room.name}</h3>
+                    <p>Location: ${room.location}</p>
+                    <div id="bookings-room-${room.id}" class="booking-details">
+                        ${room.bookings.length ? room.bookings.map(booking => `
+                            <p>
+                                <strong>${booking.employeeName}</strong>:
+                                ${booking.startTime} to ${booking.endTime}
+                            </p>
+                        `).join('') : '<p>No bookings yet.</p>'}
+                    </div>
+                    <button onclick="openBookingModal(${room.id})">Book Room</button>
+                `;
+                container.appendChild(roomCard);
+            });
+        }
+
+        // Open booking modal
+        function openBookingModal(roomId) {
+            document.getElementById('room-id').value = roomId;
+            document.getElementById('booking-modal').style.display = 'block';
+        }
+
+        // Close booking modal
+        function closeBookingModal() {
+            document.getElementById('booking-modal').style.display = 'none';
+        }
+
+        // Submit booking
+        function submitBooking() {
+            const roomId = parseInt(document.getElementById('room-id').value, 10);
+            const startTime = document.getElementById('start-time').value;
+            const endTime = document.getElementById('end-time').value;
+            const employeeName = document.getElementById('employee-name-hidden').value;
+            const employeeId = document.getElementById('employee-id-hidden').value;
+
+            if (startTime && endTime) {
+                // Add the booking to the selected room
+                const room = rooms.find(r => r.id === roomId);
+                if (room) {
+                    room.bookings.push({
+                        employeeName,
+                        employeeId,
+                        startTime,
+                        endTime,
+                    });
+
+                    // Refresh the room cards
+                    loadRooms();
+
+                    alert(`Room booked successfully!\nRoom ID: ${roomId}\nEmployee: ${employeeName} (${employeeId})\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
+                    closeBookingModal();
+                }
+            } else {
+                alert('Please select start and end times.');
+            }
+        }
+
+        // Initial load
+        loadRooms();
+    </script>
+</body>
+</html>
