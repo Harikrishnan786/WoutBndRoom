@@ -243,29 +243,63 @@ th {
 
                     function submitBooking() {
     const roomId = parseInt(document.getElementById('room-id').value, 10);
-    const startTime = document.getElementById('start-time').value;
-    const endTime = document.getElementById('end-time').value;
+    const startTime = new Date(document.getElementById('start-time').value);
+    const endTime = new Date(document.getElementById('end-time').value);
     const employeeName = document.getElementById('employee-name-hidden').value;
     const employeeId = document.getElementById('employee-id-hidden').value;
 
-    if (startTime && endTime) {
+    if (startTime && endTime && startTime < endTime) {
         const room = rooms.find(r => r.id === roomId);
         if (room) {
+            // Check for overlapping bookings
+            const isOverlap = room.bookings.some(booking => {
+                const bookingStart = new Date(booking.startTime);
+                const bookingEnd = new Date(booking.endTime);
+                return (
+                    (startTime >= bookingStart && startTime < bookingEnd) || // Start time overlaps
+                    (endTime > bookingStart && endTime <= bookingEnd) || // End time overlaps
+                    (startTime <= bookingStart && endTime >= bookingEnd) // Encloses existing booking
+                );
+            });
+
+            if (isOverlap) {
+                // Alert the user if there's a conflict
+                alert(`The room is already booked for this time slot by ${room.bookings.find(b => {
+                    const bookingStart = new Date(b.startTime);
+                    const bookingEnd = new Date(b.endTime);
+                    return (
+                        (startTime >= bookingStart && startTime < bookingEnd) || 
+                        (endTime > bookingStart && endTime <= bookingEnd) || 
+                        (startTime <= bookingStart && endTime >= bookingEnd)
+                    );
+                }).employeeName} (Emp ID: ${room.bookings.find(b => {
+                    const bookingStart = new Date(b.startTime);
+                    const bookingEnd = new Date(b.endTime);
+                    return (
+                        (startTime >= bookingStart && startTime < bookingEnd) || 
+                        (endTime > bookingStart && endTime <= bookingEnd) || 
+                        (startTime <= bookingStart && endTime >= bookingEnd)
+                    );
+                }).employeeId}).`);
+                return;
+            }
+
+            // Add the booking if no conflict exists
             room.bookings.push({
                 employeeName,
                 employeeId,
-                startTime,
-                endTime,
+                startTime: startTime.toISOString(),
+                endTime: endTime.toISOString(),
             });
 
             // Refresh the room display to show updated bookings
             loadRooms();
 
-            alert(`Room booked successfully!\nRoom ID: ${roomId}\nEmployee: ${employeeName} (${employeeId})\nStart Time: ${startTime}\nEnd Time: ${endTime}`);
+            alert(`Room booked successfully!\nRoom ID: ${roomId}\nEmployee: ${employeeName} (${employeeId})\nStart Time: ${startTime.toLocaleString()}\nEnd Time: ${endTime.toLocaleString()}`);
             closeBookingModal();
         }
     } else {
-        alert('Please select start and end times.');
+        alert('Please select valid start and end times.');
     }
 }
 
