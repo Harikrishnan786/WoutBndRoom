@@ -168,6 +168,23 @@ th {
     </div>
 
     <script>
+        function enableBooking() {
+        const name = document.getElementById('employee-name').value;
+        const id = document.getElementById('employee-id').value;
+
+        if (name.trim() && id.trim()) {
+            document.getElementById('employee-name-hidden').value = name;
+            document.getElementById('employee-id-hidden').value = id;
+
+            // Show the booking section and hide the form
+            document.getElementById('employee-form').style.display = 'none';
+            document.getElementById('booking-section').style.display = 'block';
+
+            loadRooms(); // Load room details
+        } else {
+            alert('Please provide both Employee Name and Employee ID.');
+        }
+    }
         const rooms = [
             { id: 1, name: "New Sales Conference", location: "First Floor", bookings:[] },
             { id: 2, name: "Jeff Bezos", location: "Second Floor",bookings:[] },
@@ -175,22 +192,7 @@ th {
             
         ];
 
-        function enableBooking() {
-            const name = document.getElementById('employee-name').value;
-            const id = document.getElementById('employee-id').value;
-
-            if (name && id) {
-                document.getElementById('employee-name-hidden').value = name;
-                document.getElementById('employee-id-hidden').value = id;
-                document.getElementById('employee-form').style.display = 'none';
-                document.getElementById('booking-section').style.display = 'block';
-                
-                loadRooms();
-            } else {
-                alert('Please provide both Employee Name and Employee ID.');
-            }
-        }
-
+        
         function loadRooms() {
     const container = document.getElementById('room-container');
     container.innerHTML = ''; // Clear existing content
