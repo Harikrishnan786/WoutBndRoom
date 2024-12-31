@@ -182,8 +182,9 @@ th {
             if (name && id) {
                 document.getElementById('employee-name-hidden').value = name;
                 document.getElementById('employee-id-hidden').value = id;
-                document.getElementById('booking-section').style.display = 'block';
                 document.getElementById('employee-form').style.display = 'none';
+                document.getElementById('booking-section').style.display = 'block';
+                
                 loadRooms();
             } else {
                 alert('Please provide both Employee Name and Employee ID.');
